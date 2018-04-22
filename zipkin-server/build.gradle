@@ -1,12 +1,11 @@
 buildscript {
 	ext {
-		springBootVersion = '1.4.2.RELEASE'
+		springBootVersion = '1.5.12.RELEASE' // Latest GA Spring Boot version at time of writing.
 	}
 	repositories {
 		mavenCentral()
 	}
 	dependencies {
-        classpath("io.spring.gradle:dependency-management-plugin:0.6.1.RELEASE")
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
 }
@@ -17,6 +16,7 @@ apply plugin: 'org.springframework.boot'
 
 jar {
 	baseName = 'zipkin-server'
+	// version = '0.0.1-snapshot'
 	version = ''
 }
 sourceCompatibility = 1.8
@@ -26,28 +26,32 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	springCloudVersion = 'Edgware.SR3'
+	pivotalSpringCloudVersion = '1.6.3.RELEASE'
+}
+
 /*
 * See the inline comments for details.
 */
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter') // Add Spring Boot for Context and AutoConfig.
-	compile('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry') // Add [Registry] for auto registration.
-	compile('org.springframework.cloud:spring-cloud-stream-binder-rabbit') // Add [Zipkin] [Sleuth] RabbitMQ Stream Binder.
-	compile('org.springframework.cloud:spring-cloud-sleuth-zipkin-stream') // Add [Zipkin] [Sleuth] Stream.
-	compile('org.springframework.cloud:spring-cloud-starter-sleuth') // Add [Sleuth] tracing.
+	compile('org.springframework.boot:spring-boot-starter-web') // Standard Spring Boot
+	compile('org.springframework.boot:spring-boot-starter-actuator')
+	compile('org.springframework.cloud:spring-cloud-starter-sleuth') // Add [Zipkin] [Sleuth] Stream.
+	compile('org.springframework.cloud:spring-cloud-sleuth-zipkin-stream')  // Add [Zipkin] [Sleuth] Stream.
+	compile('org.springframework.cloud:spring-cloud-starter-stream-rabbit') // Add [Zipkin] [Sleuth] RabbitMQ Stream Binder.
+	compile('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
+
 	runtime('io.zipkin.java:zipkin-autoconfigure-ui') // Add [Zipkin] UI.
-	testCompile('org.springframework.boot:spring-boot-starter-test') // Add Spring Boot Test.
+
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile('org.springframework.cloud:spring-cloud-stream-test-support')
 }
 
 dependencyManagement {
 	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Camden.SR2"
-        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:1.3.0.RELEASE"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}" // Sets the versions of Spring Cloud components
+		mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:${pivotalSpringCloudVersion}" // this is critical, set version for pivotal's scs components
 	}
-}
-
-repositories {
-    maven {
-        url "https://repo.spring.io/plugins-release"
-    }
 }

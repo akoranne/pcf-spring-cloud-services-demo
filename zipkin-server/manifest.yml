@@ -1,0 +1,8 @@
+---
+applications:
+  - name: cover-zipkin-ask
+    memory: 800M
+    path: ./build/libs/zipkin-server.jar
+    services:
+      - rabbit
+      - registry

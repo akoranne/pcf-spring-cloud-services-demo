@@ -1,0 +1,10 @@
+---
+applications:
+  - name: cover-service-ask
+    path: ./build/libs/cover-service.jar
+    memory: 800M
+    services:
+      - registry
+      - config
+      - rabbit
+

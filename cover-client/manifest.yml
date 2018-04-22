@@ -1,0 +1,10 @@
+---
+applications:
+  - name: cover-client-ask
+    path: ./build/libs/cover-client.jar
+    memory: 800M
+    services:
+      - registry
+      - config
+      - breaker
+      - rabbit
